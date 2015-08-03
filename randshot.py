@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import httplib2, sys, os, time, random, string
+import httplib2, sys, os, random, string
 
 ENDLINE = '\033[0m'
 BOLD = '\033[1m'
