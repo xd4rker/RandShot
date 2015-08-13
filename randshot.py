@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import httplib2, sys, os, random, string
+import httplib2, sys, os, time, random, string
 
 ENDLINE = '\033[0m'
 BOLD = '\033[1m'
@@ -22,6 +22,14 @@ def SavePic(content, ID, ext):
 	f = open(dirname + '/' +str(ID) + ext,'wb')
 	f.write(content)
 	f.close
+
+def PrintStatus(pngCount, link, COLOR):
+	sys.stdout.write(BLUE + BOLD + '[+] ' + ENDLINE + str(pngCount) + ' Screenshots Found - ' + COLOR + BOLD + link + ENDLINE + '\r')
+	sys.stdout.flush()
+
+def Aborting():
+	print '\n\n' + GREEN + BOLD + '[+]' + ENDLINE + ' All found Screenshots were saved to: ' + BOLD + os.getcwd() + '/' + dirname + ENDLINE + ' . Enjoy ;)\n'
+	sys.exit()
 
 print YELLOW + BOLD + '''
   _____                 _  _____ _           _   
@@ -55,11 +63,7 @@ while 1:
 				SavePic(resp[1], ID, ext)
 				COLOR = GREEN
 			
-		sys.stdout.write(BLUE + BOLD + '[+] ' + ENDLINE + str(pngCount) + ' Screenshots Found - ' + COLOR + BOLD + link + ENDLINE + '\r')
-		sys.stdout.flush()
+		PrintStatus(pngCount, link, COLOR)
 
 	except KeyboardInterrupt:
-		print ''
-		#print '- Aborting ...\n'
-		print '\n' + GREEN + BOLD + '[+]' + ENDLINE + ' All found Screenshots were saved to: '+BOLD+ os.getcwd() + '/' + dirname + ENDLINE + ' . Enjoy ;)\n'
-		sys.exit()
+		Aborting()
