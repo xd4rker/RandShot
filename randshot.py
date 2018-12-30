@@ -15,21 +15,20 @@ dirname = 'Lightshotr'
 pngCount = 0
 foundss = 0
 
-def generateId(size=6):
+def generate_id(size=6):
 	return ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(size))
 
-def SavePic(content, ID, ext):
-	f = open(dirname + '/' +str(ID) + ext,'wb')
+def save_pic(content, pic_id, ext):
+	f = open(dirname + '/' +str(pic_id) + ext,'wb')
 	f.write(content)
 	f.close
 
-def PrintStatus(pngCount, link, COLOR):
-	sys.stdout.write(BLUE + BOLD + '[+] ' + ENDLINE + str(pngCount) + ' Screenshots Found - ' + COLOR + BOLD + link + ENDLINE + '\r')
-	sys.stdout.flush()
+def print_status(png_count, link, color):
+	print BLUE + BOLD + '[+] ' + ENDLINE + str(png_count) + ' Screenshots Found - ' + color + BOLD + link + ENDLINE
 
-def Aborting():
+def abort():
 	print '\n\n' + GREEN + BOLD + '[+]' + ENDLINE + ' All found Screenshots were saved to: ' + BOLD + os.getcwd() + '/' + dirname + ENDLINE + ' . Enjoy ;)\n'
-	sys.exit()
+	sys.exit(0)
 
 print YELLOW + BOLD + '''
   _____                 _  _____ _           _   
@@ -48,9 +47,9 @@ while 1:
 
 	try:
 
-		COLOR = RED
-		ID = generateId()
-		link = 'http://prntscr.com/' + ID + '/direct'
+		status_color = RED
+		pic_id = generate_id()
+		link = 'https://prnt.sc/' + pic_id + '/direct'
 		h = httplib2.Http(timeout=100)
 		resp = h.request(link)
 
@@ -60,10 +59,15 @@ while 1:
 
 			if (pngUrl != 'http://i.imgur.com/8tdUI8N.png') & (ext == '.png' or ext == '.jpg'):
 				pngCount += 1
-				SavePic(resp[1], ID, ext)
-				COLOR = GREEN
+				save_pic(resp[1], pic_id, ext)
+				status_color = GREEN
 			
-		PrintStatus(pngCount, link, COLOR)
+		print_status(pngCount, link, status_color)
 
+	except httplib2.RelativeURIError:
+		pass
 	except KeyboardInterrupt:
-		Aborting()
+		abort()
+	except Exception as e:
+		print '\n\n' + GREEN + BOLD + '[+]' + ENDLINE + ' An error occurred: ' + str(e)
+		sys.exit(1)
